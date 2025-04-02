@@ -13,4 +13,8 @@ public interface ScheduleService {
     List<ScheduleResponseDto> findAll();
 
     List<ScheduleResponseDto> findMySchedules(Long id);
+
+    ScheduleResponseDto updateSchedule(Long id, String title, String contents);
+
+    void deleteSchedule(Long scheduleId);
 }

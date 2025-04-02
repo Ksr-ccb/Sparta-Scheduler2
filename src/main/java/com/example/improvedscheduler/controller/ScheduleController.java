@@ -3,6 +3,7 @@ package com.example.improvedscheduler.controller;
 import com.example.improvedscheduler.dto.UserResponseDto;
 import com.example.improvedscheduler.dto.scheduleRequest.CreateScheduleDto;
 import com.example.improvedscheduler.dto.ScheduleResponseDto;
+import com.example.improvedscheduler.dto.scheduleRequest.UpdateScheduleDto;
 import com.example.improvedscheduler.service.ScheduleService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * ScheduleController는 url/schedules 으로 들어오는 요청을 처리합니다.
@@ -32,8 +34,11 @@ public class ScheduleController {
      * POST METHOD를 통해서 RequestBody의 Json 내용을 ScheduleRequestDto으로 변환하여 가져옵니다.
      * 새로운 일정을 만들기 위해 필요한 변수는 '제목, 내용' 두가지 입니다.
      * 로그인을 해야 이용이 가능합니다.
-     * @param dto
-     * @return
+     * 해당 엔드포인트는 필터를 거치지 않기 떄문에 컨트롤러에서 예외처리를 해줍니다.
+     * @param dto 새로운 일정 정보를 포함한 {@link CreateScheduleDto} 객체
+     * @param request 현재 사용자의 HTTP 요청 객체 (세션 확인을 위해 사용)
+     * @return 생성된 일정 정보를 담은 {@link ScheduleResponseDto}와 HTTP 상태 코드 201(CREATED)
+     * @throws ResponseStatusException 로그인 정보가 없는 경우 HTTP 상태 코드 400(BAD REQUEST) 예외 발생
      */
     @PostMapping
     public ResponseEntity<ScheduleResponseDto> createSchedule(
@@ -70,6 +75,12 @@ public class ScheduleController {
 //        return new ResponseEntity<>(scheduleService.finaAllSchedules(), HttpStatus.OK);
 //    }
 
+
+    /**
+     * 전체 스케줄 목록을 조회하는 API입니다.
+     * @return 전체 스케줄 목록을 담은 List<ScheduleResponseDto>와 HTTP 상태 코드 200(OK)
+     * 로그인을 하지 않더라도 이용할 수 있습니다.
+     */
     @GetMapping
     public ResponseEntity<List<ScheduleResponseDto>> findAll() {
 
@@ -78,6 +89,12 @@ public class ScheduleController {
         return new ResponseEntity<>(scheduleResponseDtoList, HttpStatus.OK);
     }
 
+    /**
+     * 현재 로그인한 사용자의 스케줄 목록을 조회하는 API입니다.
+     * @param request 현재 사용자의 HTTP 요청 객체
+     * @return 로그인한 사용자의 스케줄 목록을 담은 List<ScheduleResponseDto>와 HTTP 상태 코드 200(OK)
+     * 필터에서 로그인 유무를 확인하고옵니다.
+     */
     @GetMapping("/myschedules")
     public ResponseEntity<List<ScheduleResponseDto>> findMySchedules(
             HttpServletRequest request
@@ -89,4 +106,31 @@ public class ScheduleController {
 
         return new ResponseEntity<>(scheduleResponseDtoList, HttpStatus.OK);
     }
+
+
+    @PutMapping("/{scheduleId}")
+    public ResponseEntity<ScheduleResponseDto> updateSchedule(
+            @PathVariable Long scheduleId,
+            @RequestBody UpdateScheduleDto updateScheduleDto
+            ){
+
+        ScheduleResponseDto scheduleResponseDto = scheduleService.updateSchedule(scheduleId, updateScheduleDto.getTitle(), updateScheduleDto.getContents());
+        return new ResponseEntity<>(scheduleResponseDto, HttpStatus.OK);
+    }
+
+    /**
+     * 아이디 값에 맞는 스케줄 row의 내용을 삭제하는 함수입니다.
+     * 삭제를 위해서 스케줄 row에 맞는 비밀번호를 입력받아야합니다.
+     * @param scheduleId 삭제할 스케쥴의 아이디 값 입니다.
+     * @return 삭제 후에 되돌아가는 응답 값이 없기 때문에 성공시 NO_CONTENT를 반환합니다.
+     */
+    @DeleteMapping("/{scheduleId}")
+    public ResponseEntity<Void> deleteSchedule(
+            @PathVariable Long scheduleId){
+
+        scheduleService.deleteSchedule(scheduleId);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 }

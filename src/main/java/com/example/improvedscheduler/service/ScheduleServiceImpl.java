@@ -67,4 +67,32 @@ public class ScheduleServiceImpl implements ScheduleService{
                 .toList();
     }
 
+    @Override
+    public ScheduleResponseDto updateSchedule(Long scheduleId, String title, String contents) {
+        Schedule schedule = scheduleRepository.findByIdOrElseThrow(scheduleId);
+
+        if( title != null){
+            schedule.setTitle(title);
+        }
+
+        if( contents != null){
+            schedule.setContents(contents);
+        }
+
+        return new ScheduleResponseDto(
+                schedule.getId(),
+                schedule.getTitle(),
+                schedule.getContents(),
+                schedule.getUser().getUsername(),
+                schedule.getCreateDate(),
+                schedule.getUpdateDate()
+        );
+    }
+
+    @Override
+    public void deleteSchedule(Long scheduleId) {
+        Schedule schedule = scheduleRepository.findByIdOrElseThrow(scheduleId);
+        scheduleRepository.delete(schedule);
+    }
+
 }

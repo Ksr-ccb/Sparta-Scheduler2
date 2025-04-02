@@ -12,9 +12,11 @@ public class Schedule extends DateEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @Column(nullable = false)
     private String title;
 
+    @Setter
     @Column(columnDefinition = "longtext")
     private String contents;
 
