@@ -34,7 +34,7 @@ public class ScheduleResponseDto {
                 schedule.getId(),
                 schedule.getTitle(),
                 schedule.getContents(),
-                schedule.getUesr().getUsername(),
+                schedule.getUser().getUsername(),
                 schedule.getCreateDate(),
                 schedule.getUpdateDate());
     }

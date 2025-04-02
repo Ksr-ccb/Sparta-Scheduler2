@@ -26,12 +26,12 @@ public class ScheduleServiceImpl implements ScheduleService{
         User user = userRepository.findByIdOrElseThrow(id);
 
         Schedule schedule = new Schedule(title,contents);
-        schedule.setUesr(user);
+        schedule.setUser(user);
 
         scheduleRepository.save(schedule);
 
         return new ScheduleResponseDto(schedule.getId(), schedule.getTitle(), schedule.getContents(),
-                schedule.getUesr().getUsername(), schedule.getCreateDate(), schedule.getUpdateDate());
+                schedule.getUser().getUsername(), schedule.getCreateDate(), schedule.getUpdateDate());
 
     }
 
@@ -44,7 +44,7 @@ public class ScheduleServiceImpl implements ScheduleService{
                 schedule.getId(),
                 schedule.getTitle(),
                 schedule.getContents(),
-                schedule.getUesr().getUsername(),
+                schedule.getUser().getUsername(),
                 schedule.getCreateDate(),
                 schedule.getUpdateDate()
         ));
@@ -53,6 +53,15 @@ public class ScheduleServiceImpl implements ScheduleService{
     @Override
     public List<ScheduleResponseDto> findAll() {
         return scheduleRepository.findAll()
+                .stream()
+                .map(ScheduleResponseDto::toResponseDto)
+                .toList();
+    }
+
+    @Override
+    public List<ScheduleResponseDto> findMySchedules(Long userId) {
+        List<Schedule> schedules = scheduleRepository.findAllByUser_Id(userId);
+        return schedules
                 .stream()
                 .map(ScheduleResponseDto::toResponseDto)
                 .toList();

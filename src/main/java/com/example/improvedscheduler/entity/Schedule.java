@@ -3,7 +3,6 @@ package com.example.improvedscheduler.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @Getter
 @Entity
@@ -22,7 +21,7 @@ public class Schedule extends DateEntity{
     @Setter
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User uesr;
+    private User user;
 
     public Schedule(String title, String contents) {
         this.title = title;

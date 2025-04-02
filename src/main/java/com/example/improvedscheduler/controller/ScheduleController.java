@@ -78,4 +78,15 @@ public class ScheduleController {
         return new ResponseEntity<>(scheduleResponseDtoList, HttpStatus.OK);
     }
 
+    @GetMapping("/myschedules")
+    public ResponseEntity<List<ScheduleResponseDto>> findMySchedules(
+            HttpServletRequest request
+    ) {
+        HttpSession session = request.getSession(false);
+        UserResponseDto loginUser = (UserResponseDto) session.getAttribute("loginUser");
+
+        List<ScheduleResponseDto> scheduleResponseDtoList = scheduleService.findMySchedules(loginUser.getId());
+
+        return new ResponseEntity<>(scheduleResponseDtoList, HttpStatus.OK);
+    }
 }
