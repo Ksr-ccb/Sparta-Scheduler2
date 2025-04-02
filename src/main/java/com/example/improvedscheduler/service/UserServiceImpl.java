@@ -3,10 +3,12 @@ package com.example.improvedscheduler.service;
 import com.example.improvedscheduler.dto.UserResponseDto;
 import com.example.improvedscheduler.entity.User;
 import com.example.improvedscheduler.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
@@ -18,6 +20,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
 
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
     private final UserRepository userRepository;
 
     /**
@@ -28,8 +31,13 @@ public class UserServiceImpl implements UserService{
      * @param email 가입할 사용자의 이메일
      * @return 생성된 사용자의 정보를 담은 UserResponseDto 객체
      */
+    @Override
     public UserResponseDto signUp(String username, String password, String email) {
-        User user = new User(username,password,email);
+
+        //비밀번호 암호화
+        String encodedPassword = encoder.encode(password);
+
+        User user = new User(username,encodedPassword,email);
         User savedUser = userRepository.save(user);
         return new UserResponseDto(savedUser.getId(), savedUser.getUsername(), savedUser.getEmail());
     }
@@ -42,8 +50,9 @@ public class UserServiceImpl implements UserService{
      * @return 로그인된 사용자의 정보를 담은 UserResponseDto 객체
      * @throws ResponseStatusException 이메일 또는 비밀번호가 일치하지 않을 경우 401 UNAUTHORIZED 예외 발생
      */
+    @Override
     public UserResponseDto login(String email, String password) {
-        Optional<User> loginUser = userRepository.findByEmailAndPassword(email, password);
+        Optional<User> loginUser = userRepository.findByEmail(email);
 
         if( loginUser.isEmpty()){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일과 비밀번호를 확인해주세요");
@@ -51,7 +60,31 @@ public class UserServiceImpl implements UserService{
 
         User user = userRepository.findByIdOrElseThrow(loginUser.get().getId());
 
+        if( ! encoder.matches(password, user.getPassword()) ) { // 비밀번호 불일치
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일과 비밀번호를 확인해주세요");
+        }
+
         return new UserResponseDto(user.getId(), user.getUsername(), user.getEmail());
+    }
+
+    @Transactional
+    @Override
+    public void updatePassword(Long id,
+                               String username, String oldPassword, String newPassword) {
+        User checkUser = userRepository.findByIdOrElseThrow(id);
+
+        if( ! encoder.matches(oldPassword, checkUser.getPassword()) ) { // 비밀번호 불일치
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "현재 비밀번호가 틀립니다.");
+        }
+
+        if(newPassword != null){ //비밀번호 바꿀 때
+            String encodedPassword = encoder.encode(newPassword);
+            checkUser.setPassword(encodedPassword);
+        }
+
+        if( username != null){
+            checkUser.setUsername(username);
+        }
     }
 }
 

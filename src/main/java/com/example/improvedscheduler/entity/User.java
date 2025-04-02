@@ -2,6 +2,7 @@ package com.example.improvedscheduler.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * JPA 사용을 위해 엔티티 등록을 해줍니다.
@@ -15,9 +16,11 @@ public class User extends DateEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @Column(nullable = false)
     private String username;
 
+    @Setter
     @Column(nullable = false)
     private String password;
 
@@ -33,4 +36,5 @@ public class User extends DateEntity {
     public User() {
 
     }
+
 }

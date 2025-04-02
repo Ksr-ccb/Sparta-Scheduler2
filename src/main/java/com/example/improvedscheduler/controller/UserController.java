@@ -1,19 +1,17 @@
 package com.example.improvedscheduler.controller;
 
-import com.example.improvedscheduler.dto.LogInRequestDto;
-import com.example.improvedscheduler.dto.SignUpRequestDto;
+import com.example.improvedscheduler.dto.userRequest.LogInRequestDto;
+import com.example.improvedscheduler.dto.userRequest.SignUpRequestDto;
+import com.example.improvedscheduler.dto.userRequest.UpdateRequestDto;
 import com.example.improvedscheduler.dto.UserResponseDto;
 import com.example.improvedscheduler.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * UserController url/users 으로 들어오는 요청을 처리합니다.
@@ -34,7 +32,7 @@ public class UserController {
      */
     @PostMapping("/signup")
     public ResponseEntity<UserResponseDto> signUp(
-            @RequestBody SignUpRequestDto requestDto
+            @Valid @RequestBody SignUpRequestDto requestDto
     ) {
         UserResponseDto signUpResponseDto =
                 userService.signUp(
@@ -53,20 +51,56 @@ public class UserController {
      */
     @PostMapping("/login")
     public ResponseEntity<UserResponseDto> login(
-            @RequestBody LogInRequestDto requestDto,
+            @Valid @RequestBody LogInRequestDto requestDto,
             HttpServletRequest request
     ){
         UserResponseDto responseDto = userService.login(requestDto.getEmail(), requestDto.getPassword());
-        Long userId = responseDto.getId();
 
-        // 실패시 예외처리
-        if (userId == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일과 비밀번호를 확인해주세요");
-        }
-
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(true);
         session.setAttribute("loginUser",responseDto);
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
+
+    /**
+     * 현재 로그인한 사용자의 정보를 조회하는 엔드포인트입니다.
+     *
+     * @param request 클라이언트의 HTTP 요청 객체로, 세션 정보를 포함합니다.
+     * @return 로그인한 사용자의 정보를 담은 {@link UserResponseDto} 객체와 HTTP 상태 코드 200(OK)
+     *         필터를통해 이미 로그인이 되어있는 것을 확인했기 때문에 바로 세션을 받아옵니다.
+     */
+    @GetMapping
+    public ResponseEntity<UserResponseDto> getUserInfo(
+            HttpServletRequest request
+    ){
+        HttpSession session = request.getSession(false);
+
+        // session에 저장된 유저정보 조회
+        UserResponseDto loginUser = (UserResponseDto) session.getAttribute("loginUser");
+        return new ResponseEntity<>(loginUser, HttpStatus.OK);
+    }
+
+    /**
+     * 사용자의 정보를 업데이트하는 엔드포인트입니다.
+     * 사용자 이름, 비밀번호를 선택적으로 변경할 수 있습니다.
+     * @param id 업데이트할 사용자 ID
+     * @param requestDto 업데이트할 사용자 정보가 담긴 DTO 객체
+     * @return HTTP 상태 코드 200 OK를 반환
+     */
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> updateInformation(
+            @PathVariable Long id,
+            @RequestBody UpdateRequestDto requestDto
+
+    ) {
+        userService.updatePassword(
+                id,
+                requestDto.getUsername(),
+                requestDto.getOldPassword(), requestDto.getNewPassword());
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+
 }
