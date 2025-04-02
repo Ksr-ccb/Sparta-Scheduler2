@@ -14,7 +14,7 @@ import java.io.IOException;
 @Component
 public class LoginFilter implements Filter {
     // 인증을 하지 않아도될 URL Path 배열
-    private static final String[] WHITE_LIST = {"/", "/users/signup", "/users/login"};
+    private static final String[] WHITE_LIST = {"/", "/users/signup", "/users/login", "/schedules"};
 
 
     /**

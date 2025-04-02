@@ -7,12 +7,13 @@ import com.example.improvedscheduler.service.ScheduleService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 /**
  * ScheduleController는 url/schedules 으로 들어오는 요청을 처리합니다.
@@ -42,12 +43,39 @@ public class ScheduleController {
 
         HttpSession session = request.getSession(false);
 
+        if(session == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "로그인이 필요합니다.");
+        }
         // session에 저장된 유저정보 조회
         UserResponseDto loginUser = (UserResponseDto) session.getAttribute("loginUser");
 
 
         return new ResponseEntity<>(scheduleService.saveSchedule(dto.getTitle(), dto.getContents(),
                 loginUser.getId()), HttpStatus.CREATED);
+    }
+
+    /**
+     * 특정 조건에 맞는 데이터 모두를 불러옵니다.
+     * 조건에 대한 설정 여부는 선택적입니다. ( OO / OX / XO/ XX 가능)
+     * 만약 아무 조건없이 실행한다면 모든 ROWS를 불러옵니다.
+     * @return
+     */
+//    @GetMapping
+//    public ResponseEntity<List<ScheduleResponseDto>> findAllSchedulePaged(
+//            @RequestParam(defaultValue = "0") Long pageNum,
+//            @RequestParam(required = false, defaultValue = "10") Long pageSize){
+//
+//        Page<ScheduleResponseDto> newProductPage = scheduleService.getAllSchedulesPaged(pageNum,pageSize);
+//
+//        return new ResponseEntity<>(scheduleService.finaAllSchedules(), HttpStatus.OK);
+//    }
+
+    @GetMapping
+    public ResponseEntity<List<ScheduleResponseDto>> findAll() {
+
+        List<ScheduleResponseDto> scheduleResponseDtoList = scheduleService.findAll();
+
+        return new ResponseEntity<>(scheduleResponseDtoList, HttpStatus.OK);
     }
 
 }
