@@ -1,7 +1,9 @@
 package com.example.improvedscheduler.service;
 
 import com.example.improvedscheduler.dto.user.UserResponseDto;
+import com.example.improvedscheduler.entity.Schedule;
 import com.example.improvedscheduler.entity.User;
+import com.example.improvedscheduler.repository.ScheduleRepository;
 import com.example.improvedscheduler.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
 
+    private final ScheduleRepository scheduleRepository;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
     private final UserRepository userRepository;
 
@@ -67,6 +70,17 @@ public class UserServiceImpl implements UserService{
         return new UserResponseDto(user.getId(), user.getUsername(), user.getEmail());
     }
 
+    /**
+     * 사용자의 비밀번호와 사용자명을 업데이트하는 메서드입니다.
+     * 사용자의 비밀번호를 변경하기 위해 현재 비밀번호를 확인합니다.
+     * 새로운 비밀번호가 제공된 경우 암호화하여 저장합니다.
+     * 사용자명이 제공된 경우 사용자명을 업데이트합니다.
+     * @param id 사용자의 ID
+     * @param username 변경할 사용자명 (null 가능)
+     * @param oldPassword 현재 비밀번호
+     * @param newPassword 변경할 새 비밀번호 (null 가능)
+     * @throws ResponseStatusException 현재 비밀번호가 일치하지 않을 경우 UNAUTHORIZED 오류를 반환
+     */
     @Transactional
     @Override
     public void updatePassword(Long id,
@@ -85,6 +99,20 @@ public class UserServiceImpl implements UserService{
         if( username != null){
             checkUser.setUsername(username);
         }
+    }
+
+    /**
+     * 사용자를 삭제하는 메서드입니다.
+     * 사용자가 작성한 모든 스케줄을 삭제한 후, 해당 사용자를 삭제합니다.
+     * @param userId 삭제할 사용자의 ID
+     */
+    @Transactional
+    @Override
+    public void deleteUser(Long userId) {
+        User schedule = userRepository.findByIdOrElseThrow(userId);
+
+        scheduleRepository.deleteByUser_Id(userId);
+        userRepository.delete(schedule);
     }
 }
 

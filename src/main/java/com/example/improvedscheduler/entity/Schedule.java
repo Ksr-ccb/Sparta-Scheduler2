@@ -32,6 +32,5 @@ public class Schedule extends DateEntity{
     }
 
     public Schedule() {
-
     }
 }

@@ -20,4 +20,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     Page<Schedule> findAllByOrderByIdAsc(Pageable pageable);
 
     List<Schedule> findAllByUser_Id(Long id);
+
+    void deleteByUser_Id(Long userId);
 }

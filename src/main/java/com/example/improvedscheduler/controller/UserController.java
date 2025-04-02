@@ -85,7 +85,6 @@ public class UserController {
      * 사용자 이름, 비밀번호를 선택적으로 변경할 수 있습니다.
      * @param id 업데이트할 사용자 ID
      * @param requestDto 업데이트할 사용자 정보가 담긴 DTO 객체
-     * @return HTTP 상태 코드 200 OK를 반환
      */
     @PatchMapping("/{id}")
     public ResponseEntity<Void> updateInformation(
@@ -98,6 +97,20 @@ public class UserController {
                 requestDto.getUsername(),
                 requestDto.getOldPassword(), requestDto.getNewPassword());
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    /**
+     * 특정 사용자를 삭제하는 API 엔드포인트입니다.
+     * 요청된 사용자 ID에 해당하는 사용자를 삭제합니다.
+     * 사용자가 작성한 모든 스케줄도 함께 삭제됩니다.
+     * @param userId 삭제할 사용자의 ID
+     * @return HTTP 204 No Content 상태 코드 반환 (응답 본문 없음)
+     */
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteUser(
+            @PathVariable Long userId){
+        userService.deleteUser(userId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

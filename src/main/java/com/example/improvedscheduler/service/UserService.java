@@ -11,4 +11,5 @@ public interface UserService {
                         @NotBlank(message = "현재 비밀번호를 입력해주세요.") String oldPassword,
                         String newPassword);
 
+    void deleteUser(Long userId);
 }
