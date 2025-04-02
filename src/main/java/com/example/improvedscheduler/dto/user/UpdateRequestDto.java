@@ -1,4 +1,4 @@
-package com.example.improvedscheduler.dto.userRequest;
+package com.example.improvedscheduler.dto.user;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

@@ -1,9 +1,6 @@
-package com.example.improvedscheduler.dto;
+package com.example.improvedscheduler.dto.user;
 
 import lombok.Getter;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import java.time.LocalDateTime;
 
 /**
  * 회원 가입 완료 후 반환하는 데이털르 담는 dto입니다.

@@ -1,9 +1,9 @@
 package com.example.improvedscheduler.controller;
 
-import com.example.improvedscheduler.dto.userRequest.LogInRequestDto;
-import com.example.improvedscheduler.dto.userRequest.SignUpRequestDto;
-import com.example.improvedscheduler.dto.userRequest.UpdateRequestDto;
-import com.example.improvedscheduler.dto.UserResponseDto;
+import com.example.improvedscheduler.dto.user.LogInRequestDto;
+import com.example.improvedscheduler.dto.user.SignUpRequestDto;
+import com.example.improvedscheduler.dto.user.UpdateRequestDto;
+import com.example.improvedscheduler.dto.user.UserResponseDto;
 import com.example.improvedscheduler.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;

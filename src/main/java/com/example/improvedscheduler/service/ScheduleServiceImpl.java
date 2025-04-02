@@ -1,6 +1,6 @@
 package com.example.improvedscheduler.service;
 
-import com.example.improvedscheduler.dto.ScheduleResponseDto;
+import com.example.improvedscheduler.dto.schedule.ScheduleResponseDto;
 import com.example.improvedscheduler.entity.Schedule;
 import com.example.improvedscheduler.entity.User;
 import com.example.improvedscheduler.repository.ScheduleRepository;

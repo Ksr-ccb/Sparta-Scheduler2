@@ -1,21 +1,19 @@
 package com.example.improvedscheduler.controller;
 
-import com.example.improvedscheduler.dto.UserResponseDto;
-import com.example.improvedscheduler.dto.scheduleRequest.CreateScheduleDto;
-import com.example.improvedscheduler.dto.ScheduleResponseDto;
-import com.example.improvedscheduler.dto.scheduleRequest.UpdateScheduleDto;
+import com.example.improvedscheduler.dto.user.UserResponseDto;
+import com.example.improvedscheduler.dto.schedule.CreateScheduleDto;
+import com.example.improvedscheduler.dto.schedule.ScheduleResponseDto;
+import com.example.improvedscheduler.dto.schedule.UpdateScheduleDto;
 import com.example.improvedscheduler.service.ScheduleService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * ScheduleController는 url/schedules 으로 들어오는 요청을 처리합니다.
