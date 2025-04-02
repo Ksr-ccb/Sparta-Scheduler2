@@ -120,7 +120,7 @@ public class ScheduleController {
      * 아이디 값에 맞는 스케줄 row의 내용을 삭제하는 함수입니다.
      * 삭제를 위해서 스케줄 row에 맞는 비밀번호를 입력받아야합니다.
      * @param scheduleId 삭제할 스케쥴의 아이디 값 입니다.
-     * @return 삭제 후에 되돌아가는 응답 값이 없기 때문에 성공시 NO_CONTENT를 반환합니다.
+     * @return 삭제 후에 되돌아가는 응답 값이 없기 때문에 성공시 NO_CONTENT 를 반환합니다.
      */
     @DeleteMapping("/{scheduleId}")
     public ResponseEntity<Void> deleteSchedule(
