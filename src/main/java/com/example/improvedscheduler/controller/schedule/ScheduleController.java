@@ -7,6 +7,7 @@ import com.example.improvedscheduler.service.schedule.ScheduleService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 /**
- * ScheduleController는 url/schedules 으로 들어오는 요청을 처리합니다.
+ * ScheduleController 는 url/schedules 으로 들어오는 요청을 처리합니다.
  * 게시글 쓰기, 읽기, 수정, 삭제가 가능합니다.
  * 읽기를 제외한 서비스는 모두 로그인을 해야 이용이 가능합니다.
  */
@@ -56,20 +57,19 @@ public class ScheduleController {
     }
 
     /**
-     * 특정 조건에 맞는 데이터 모두를 불러옵니다.
-     * 조건에 대한 설정 여부는 선택적입니다. ( OO / OX / XO/ XX 가능)
-     * 만약 아무 조건없이 실행한다면 모든 ROWS를 불러옵니다.
-     * @return
+     * 데이터 모두를 불러옵니다.
+     * 불러올때 페이지의 크기와 순서를 지정할 수 잇습니다.
+     * 만약에 불러올 데이터가 없다면 빈 페이지를 반환합니다.
+     * 만약 아무 조건없이 실행한다면 pageNum = 0 , pageSize = 10이 됩니다.
      */
-//    @GetMapping
-//    public ResponseEntity<List<ScheduleResponseDto>> findAllSchedulePaged(
-//            @RequestParam(defaultValue = "0") Long pageNum,
-//            @RequestParam(required = false, defaultValue = "10") Long pageSize){
-//
-//        Page<ScheduleResponseDto> newProductPage = scheduleService.getAllSchedulesPaged(pageNum,pageSize);
-//
-//        return new ResponseEntity<>(scheduleService.finaAllSchedules(), HttpStatus.OK);
-//    }
+    @GetMapping("/pages")
+    public ResponseEntity<Page<MultipleSchedulesResponseDto>> findAllSchedulePaged(
+            @RequestParam(defaultValue = "1") int pageNum,
+            @RequestParam(defaultValue = "10") int pageSize
+    ){
+
+        return new ResponseEntity<>(scheduleService.getAllSchedulesPaged(pageNum-1,pageSize), HttpStatus.OK);
+    }
 
 
     /**
@@ -78,11 +78,9 @@ public class ScheduleController {
      * 로그인을 하지 않더라도 이용할 수 있습니다.
      */
     @GetMapping
-    public ResponseEntity<List<ScheduleResponseDto>> findAll() {
+    public ResponseEntity<List<MultipleSchedulesResponseDto>> findAll() {
 
-        List<ScheduleResponseDto> scheduleResponseDtoList = scheduleService.findAll();
-
-        return new ResponseEntity<>(scheduleResponseDtoList, HttpStatus.OK);
+        return new ResponseEntity<>(scheduleService.findAll(), HttpStatus.OK);
     }
 
     /**
@@ -92,13 +90,13 @@ public class ScheduleController {
      * 필터에서 로그인 유무를 확인하고옵니다.
      */
     @GetMapping("/myschedules")
-    public ResponseEntity<List<ScheduleResponseDto>> findMySchedules(
+    public ResponseEntity<List<MultipleSchedulesResponseDto>> findMySchedules(
             HttpServletRequest request
     ) {
         HttpSession session = request.getSession(false);
         UserResponseDto loginUser = (UserResponseDto) session.getAttribute("loginUser");
 
-        List<ScheduleResponseDto> scheduleResponseDtoList = scheduleService.findMySchedules(loginUser.getId());
+        List<MultipleSchedulesResponseDto> scheduleResponseDtoList = scheduleService.findMySchedules(loginUser.getId());
 
         return new ResponseEntity<>(scheduleResponseDtoList, HttpStatus.OK);
     }
@@ -132,13 +130,8 @@ public class ScheduleController {
         HttpSession session = request.getSession(false);
         UserResponseDto loginUser = (UserResponseDto) session.getAttribute("loginUser");
 
-        Long correspondingId = scheduleService.getUserIdByScheduleId(scheduleId);
-
-        if(!correspondingId.equals(loginUser.getId())){
-            throw new WrongApproachException("작성한 본인만 수정할 수 있습니다.");
-        }
-
-        ScheduleResponseDto scheduleResponseDto = scheduleService.updateSchedule(scheduleId, updateScheduleDto.getTitle(), updateScheduleDto.getContents());
+        ScheduleResponseDto scheduleResponseDto = scheduleService.updateSchedule(scheduleId, loginUser.getId(),
+                updateScheduleDto.getTitle(), updateScheduleDto.getContents());
         return new ResponseEntity<>(scheduleResponseDto, HttpStatus.OK);
     }
 
@@ -157,21 +150,23 @@ public class ScheduleController {
     ){
         HttpSession session = request.getSession(false);
         UserResponseDto loginUser = (UserResponseDto) session.getAttribute("loginUser");
-
-
-        Long correspondingId = scheduleService.getUserIdByScheduleId(scheduleId);
-
-        if(!correspondingId.equals(loginUser.getId())){
-            throw new WrongApproachException("작성한 본인만 삭제할 수 있습니다.");
-        }
         
-        scheduleService.deleteSchedule(scheduleId);
+        scheduleService.deleteSchedule(scheduleId, loginUser.getId());
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     /***************밑은 덧글 api******************/
 
+    /**
+     * 특정 일정에 댓글을 추가하는 API 입니다.
+     * 요청 본문에서 댓글 내용을 받아와 로그인한 사용자 정보를 기반으로 댓글을 생성합니다.
+     * @param dto 댓글 생성 요청 DTO
+     * @param scheduleId 댓글을 추가할 일정 ID
+     * @param request HTTP 요청 객체 (세션에서 로그인 사용자 정보 가져오기 위함)
+     * @return 댓글이 추가된 일정 응답 DTO
+     * @throws ResponseStatusException 일정이 존재하지 않은 경우
+     */
     @PostMapping("/{scheduleId}")
     public ResponseEntity<ScheduleResponseDto> createComment(
             @RequestBody CreateCommentRequestDto dto,
@@ -181,8 +176,35 @@ public class ScheduleController {
         HttpSession session = request.getSession(false);
         UserResponseDto loginUser = (UserResponseDto) session.getAttribute("loginUser");
 
-
         return new ResponseEntity<>(scheduleService.createComment(scheduleId,loginUser.getId(),dto.getContents()), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{scheduleId}/{commentId}")
+    public ResponseEntity<ScheduleResponseDto> updateComment(
+            @PathVariable Long scheduleId,
+            @PathVariable Long commentId,
+            HttpServletRequest request,
+            @RequestBody UpdateCommentRequestDto dto
+        ){
+        HttpSession session = request.getSession(false);
+        UserResponseDto loginUser = (UserResponseDto) session.getAttribute("loginUser");
+
+
+        return new ResponseEntity<>(scheduleService.updateComment(scheduleId,commentId,loginUser.getId(), dto.getContents()),HttpStatus.OK);
+    }
+
+
+    @DeleteMapping("/{scheduleId}/{commentId}")
+    public ResponseEntity<Void> deleteComment(
+            @PathVariable Long scheduleId,
+            @PathVariable Long commentId,
+            HttpServletRequest request
+    ){
+        HttpSession session = request.getSession(false);
+        UserResponseDto loginUser = (UserResponseDto) session.getAttribute("loginUser");
+
+        scheduleService.deleteComment(scheduleId,commentId,loginUser.getId());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

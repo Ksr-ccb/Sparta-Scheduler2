@@ -48,12 +48,12 @@ public class ApiExceptionHandler {
 
     /**
      * 기타 예외 처리 (예상치 못한 서버 에러)
-     */
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGlobalException(Exception ex) {
         Map<String, String> errorResponse = new HashMap<>();
         errorResponse.put("message", "서버 내부 오류가 발생했습니다.");
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
+     */
 }
