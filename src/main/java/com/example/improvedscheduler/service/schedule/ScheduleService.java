@@ -9,7 +9,7 @@ import java.util.List;
 public interface ScheduleService {
     ScheduleResponseDto saveSchedule(String title, String contents, Long id);
 
-    Page<MultipleSchedulesResponseDto> getAllSchedulesPaged(int pageNum, int pageSize);
+    List<MultipleSchedulesResponseDto> getAllSchedulesPaged(int pageNum, int pageSize);
 
     List<MultipleSchedulesResponseDto> findAll();
 

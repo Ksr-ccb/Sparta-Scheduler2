@@ -60,12 +60,13 @@ public class ScheduleServiceImpl implements ScheduleService{
      */
     @Override
     @Transactional(readOnly = true)
-    public Page<MultipleSchedulesResponseDto> getAllSchedulesPaged(int pageNum, int pageSize) {
+    public List<MultipleSchedulesResponseDto> getAllSchedulesPaged(int pageNum, int pageSize) {
         Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.DESC,
                 "updateDate"));
 
         return scheduleRepository.findAll(pageable)
-                .map(MultipleSchedulesResponseDto::toMultipleResponseDto);
+                .map(MultipleSchedulesResponseDto::toMultipleResponseDto)
+                .getContent();
     }
 
     /**

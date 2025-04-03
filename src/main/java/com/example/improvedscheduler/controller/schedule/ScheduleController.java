@@ -66,7 +66,7 @@ public class ScheduleController {
      * 만약 아무 조건없이 실행한다면 pageNum = 0 , pageSize = 10이 됩니다.
      */
     @GetMapping("/pages")
-    public ResponseEntity<Page<MultipleSchedulesResponseDto>> findAllSchedulePaged(
+    public ResponseEntity<List<MultipleSchedulesResponseDto>> findAllSchedulePaged(
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize
     ){
