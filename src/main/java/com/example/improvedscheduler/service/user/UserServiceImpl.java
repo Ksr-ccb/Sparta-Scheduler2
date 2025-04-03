@@ -1,9 +1,11 @@
-package com.example.improvedscheduler.service;
+package com.example.improvedscheduler.service.user;
 
 import com.example.improvedscheduler.dto.user.UserResponseDto;
-import com.example.improvedscheduler.entity.User;
-import com.example.improvedscheduler.repository.ScheduleRepository;
-import com.example.improvedscheduler.repository.UserRepository;
+import com.example.improvedscheduler.entity.user.User;
+import com.example.improvedscheduler.exception.ResourceNotFoundException;
+import com.example.improvedscheduler.exception.UnauthorizedActionException;
+import com.example.improvedscheduler.repository.schedule.ScheduleRepository;
+import com.example.improvedscheduler.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -57,13 +59,13 @@ public class UserServiceImpl implements UserService{
         Optional<User> loginUser = userRepository.findByEmail(email);
 
         if( loginUser.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일과 비밀번호를 확인해주세요");
+            throw new ResourceNotFoundException("이메일과 비밀번호를 확인해주세요");
         }
 
         User user = userRepository.findByIdOrElseThrow(loginUser.get().getId());
 
         if( ! encoder.matches(password, user.getPassword()) ) { // 비밀번호 불일치
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일과 비밀번호를 확인해주세요");
+            throw new UnauthorizedActionException("현재 비밀번호가 틀립니다.");
         }
 
         return new UserResponseDto(user.getId(), user.getUsername(), user.getEmail());
@@ -87,7 +89,7 @@ public class UserServiceImpl implements UserService{
         User checkUser = userRepository.findByIdOrElseThrow(id);
 
         if( ! encoder.matches(oldPassword, checkUser.getPassword()) ) { // 비밀번호 불일치
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "현재 비밀번호가 틀립니다.");
+            throw new UnauthorizedActionException( "현재 비밀번호가 틀립니다.");
         }
 
         if(newPassword != null){ //비밀번호 바꿀 때

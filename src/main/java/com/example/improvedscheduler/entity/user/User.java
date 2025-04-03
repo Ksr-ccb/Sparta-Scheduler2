@@ -1,5 +1,6 @@
-package com.example.improvedscheduler.entity;
+package com.example.improvedscheduler.entity.user;
 
+import com.example.improvedscheduler.entity.DateEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

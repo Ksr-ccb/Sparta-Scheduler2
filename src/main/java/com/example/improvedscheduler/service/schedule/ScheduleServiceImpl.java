@@ -1,10 +1,10 @@
-package com.example.improvedscheduler.service;
+package com.example.improvedscheduler.service.schedule;
 
 import com.example.improvedscheduler.dto.schedule.ScheduleResponseDto;
-import com.example.improvedscheduler.entity.Schedule;
-import com.example.improvedscheduler.entity.User;
-import com.example.improvedscheduler.repository.ScheduleRepository;
-import com.example.improvedscheduler.repository.UserRepository;
+import com.example.improvedscheduler.entity.schedule.Schedule;
+import com.example.improvedscheduler.entity.user.User;
+import com.example.improvedscheduler.repository.schedule.ScheduleRepository;
+import com.example.improvedscheduler.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -93,6 +93,12 @@ public class ScheduleServiceImpl implements ScheduleService{
     public void deleteSchedule(Long scheduleId) {
         Schedule schedule = scheduleRepository.findByIdOrElseThrow(scheduleId);
         scheduleRepository.delete(schedule);
+    }
+
+    @Override
+    public Long getUserIdByScheduleId(Long scheduleId) {
+        Schedule schedule = scheduleRepository.findByIdOrElseThrow(scheduleId);
+        return schedule.getUser().getId();
     }
 
 }

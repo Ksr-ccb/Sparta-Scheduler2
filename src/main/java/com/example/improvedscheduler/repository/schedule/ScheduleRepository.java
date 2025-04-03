@@ -1,6 +1,7 @@
-package com.example.improvedscheduler.repository;
+package com.example.improvedscheduler.repository.schedule;
 
-import com.example.improvedscheduler.entity.Schedule;
+import com.example.improvedscheduler.entity.schedule.Schedule;
+import com.example.improvedscheduler.exception.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +13,7 @@ import java.util.List;
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     default Schedule findByIdOrElseThrow(Long id) {
-        return findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
+        return findById(id).orElseThrow(() -> new ResourceNotFoundException("해당 아이디 값이 존재하지 않습니다. : " + id));
     }
 
     Page<Schedule> findAllByOrderByIdAsc(Pageable pageable);

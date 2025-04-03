@@ -1,5 +1,7 @@
-package com.example.improvedscheduler.entity;
+package com.example.improvedscheduler.entity.schedule;
 
+import com.example.improvedscheduler.entity.DateEntity;
+import com.example.improvedscheduler.entity.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Entity
 @Table(name = "schedule")
-public class Schedule extends DateEntity{
+public class Schedule extends DateEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

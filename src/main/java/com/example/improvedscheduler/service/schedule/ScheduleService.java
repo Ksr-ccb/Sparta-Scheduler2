@@ -1,4 +1,4 @@
-package com.example.improvedscheduler.service;
+package com.example.improvedscheduler.service.schedule;
 
 import com.example.improvedscheduler.dto.schedule.ScheduleResponseDto;
 import org.springframework.data.domain.Page;
@@ -17,4 +17,6 @@ public interface ScheduleService {
     ScheduleResponseDto updateSchedule(Long id, String title, String contents);
 
     void deleteSchedule(Long scheduleId);
+
+    Long getUserIdByScheduleId(Long scheduleId);
 }

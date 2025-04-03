@@ -1,5 +1,6 @@
 package com.example.improvedscheduler.filter;
 
+import com.example.improvedscheduler.exception.WrongApproachException;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -40,7 +41,7 @@ public class LoginFilter implements Filter {
             HttpSession session = httpRequest.getSession(false); // < 로그인안됐으면 null 반환
 
             if( session == null || session.getAttribute("loginUser")== null){
-                throw new RuntimeException("로그인 해주세요.");
+                throw new WrongApproachException("로그인 해주세요.");
             }
         }
         
