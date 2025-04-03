@@ -1,7 +1,6 @@
-package com.example.improvedscheduler.dto.schedule;
+package com.example.improvedscheduler.common.dto.comment;
 
-import com.example.improvedscheduler.entity.schedule.Comment;
-import com.example.improvedscheduler.entity.schedule.Schedule;
+import com.example.improvedscheduler.entity.comment.Comment;
 
 import java.time.LocalDateTime;
 

@@ -1,4 +1,4 @@
-package com.example.improvedscheduler.dto.user;
+package com.example.improvedscheduler.common.dto.user;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

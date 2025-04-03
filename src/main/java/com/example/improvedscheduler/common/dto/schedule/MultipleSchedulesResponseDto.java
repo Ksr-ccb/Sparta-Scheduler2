@@ -1,11 +1,10 @@
-package com.example.improvedscheduler.dto.schedule;
+package com.example.improvedscheduler.common.dto.schedule;
 
 
 import com.example.improvedscheduler.entity.schedule.Schedule;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 public class MultipleSchedulesResponseDto {

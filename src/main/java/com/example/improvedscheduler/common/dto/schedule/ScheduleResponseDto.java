@@ -1,5 +1,6 @@
-package com.example.improvedscheduler.dto.schedule;
+package com.example.improvedscheduler.common.dto.schedule;
 
+import com.example.improvedscheduler.common.dto.comment.CommentResponseDto;
 import com.example.improvedscheduler.entity.schedule.Schedule;
 import lombok.Getter;
 

@@ -1,6 +1,6 @@
 package com.example.improvedscheduler.service.user;
 
-import com.example.improvedscheduler.dto.user.UserResponseDto;
+import com.example.improvedscheduler.common.dto.user.UserResponseDto;
 import jakarta.validation.constraints.NotBlank;
 
 public interface UserService {

@@ -1,4 +1,4 @@
-package com.example.improvedscheduler.dto.schedule;
+package com.example.improvedscheduler.common.dto.schedule;
 
 import jakarta.validation.constraints.Size;
 import lombok.Getter;

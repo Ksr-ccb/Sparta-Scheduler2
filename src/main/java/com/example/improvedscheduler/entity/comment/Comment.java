@@ -1,6 +1,7 @@
-package com.example.improvedscheduler.entity.schedule;
+package com.example.improvedscheduler.entity.comment;
 
 import com.example.improvedscheduler.entity.DateEntity;
+import com.example.improvedscheduler.entity.schedule.Schedule;
 import com.example.improvedscheduler.entity.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;

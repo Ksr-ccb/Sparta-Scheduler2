@@ -1,10 +1,8 @@
 package com.example.improvedscheduler.repository.user;
 
 import com.example.improvedscheduler.entity.user.User;
-import com.example.improvedscheduler.exception.ResourceNotFoundException;
+import com.example.improvedscheduler.common.exception.ResourceNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 

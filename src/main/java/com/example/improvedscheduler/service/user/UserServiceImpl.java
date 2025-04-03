@@ -1,14 +1,13 @@
 package com.example.improvedscheduler.service.user;
 
-import com.example.improvedscheduler.dto.user.UserResponseDto;
+import com.example.improvedscheduler.common.dto.user.UserResponseDto;
 import com.example.improvedscheduler.entity.user.User;
-import com.example.improvedscheduler.exception.ResourceNotFoundException;
-import com.example.improvedscheduler.exception.UnauthorizedActionException;
+import com.example.improvedscheduler.common.exception.ResourceNotFoundException;
+import com.example.improvedscheduler.common.exception.UnauthorizedActionException;
 import com.example.improvedscheduler.repository.schedule.ScheduleRepository;
 import com.example.improvedscheduler.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

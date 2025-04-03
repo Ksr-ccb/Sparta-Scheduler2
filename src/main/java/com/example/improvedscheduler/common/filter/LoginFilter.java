@@ -1,6 +1,5 @@
-package com.example.improvedscheduler.filter;
+package com.example.improvedscheduler.common.filter;
 
-import com.example.improvedscheduler.exception.WrongApproachException;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,7 +14,7 @@ import java.io.IOException;
 @Component
 public class LoginFilter implements Filter {
     // 인증을 하지 않아도될 URL Path 배열
-    private static final String[] WHITE_LIST = {"/", "/users/signup", "/users/login", "/schedules", "/schedules/pages/**"};
+    private static final String[] WHITE_LIST = {"/", "/users/signup", "/users/login", "/schedules"};
 
     /**
      * [Filter] 로그인 여부를 확인하는 필터입니다.

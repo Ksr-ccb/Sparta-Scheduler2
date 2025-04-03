@@ -1,8 +1,11 @@
 package com.example.improvedscheduler.controller.schedule;
 
-import com.example.improvedscheduler.dto.schedule.*;
-import com.example.improvedscheduler.dto.user.UserResponseDto;
-import com.example.improvedscheduler.exception.WrongApproachException;
+import com.example.improvedscheduler.common.dto.schedule.CreateScheduleDto;
+import com.example.improvedscheduler.common.dto.schedule.MultipleSchedulesResponseDto;
+import com.example.improvedscheduler.common.dto.schedule.ScheduleResponseDto;
+import com.example.improvedscheduler.common.dto.schedule.UpdateScheduleDto;
+import com.example.improvedscheduler.common.dto.user.UserResponseDto;
+import com.example.improvedscheduler.common.exception.WrongApproachException;
 import com.example.improvedscheduler.service.schedule.ScheduleService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -156,55 +159,6 @@ public class ScheduleController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    /***************밑은 덧글 api******************/
 
-    /**
-     * 특정 일정에 댓글을 추가하는 API 입니다.
-     * 요청 본문에서 댓글 내용을 받아와 로그인한 사용자 정보를 기반으로 댓글을 생성합니다.
-     * @param dto 댓글 생성 요청 DTO
-     * @param scheduleId 댓글을 추가할 일정 ID
-     * @param request HTTP 요청 객체 (세션에서 로그인 사용자 정보 가져오기 위함)
-     * @return 댓글이 추가된 일정 응답 DTO
-     * @throws ResponseStatusException 일정이 존재하지 않은 경우
-     */
-    @PostMapping("/{scheduleId}")
-    public ResponseEntity<ScheduleResponseDto> createComment(
-            @RequestBody CreateCommentRequestDto dto,
-            @PathVariable Long scheduleId,
-            HttpServletRequest request){
-
-        HttpSession session = request.getSession(false);
-        UserResponseDto loginUser = (UserResponseDto) session.getAttribute("loginUser");
-
-        return new ResponseEntity<>(scheduleService.createComment(scheduleId,loginUser.getId(),dto.getContents()), HttpStatus.CREATED);
-    }
-
-    @PutMapping("/{scheduleId}/{commentId}")
-    public ResponseEntity<ScheduleResponseDto> updateComment(
-            @PathVariable Long scheduleId,
-            @PathVariable Long commentId,
-            HttpServletRequest request,
-            @RequestBody UpdateCommentRequestDto dto
-        ){
-        HttpSession session = request.getSession(false);
-        UserResponseDto loginUser = (UserResponseDto) session.getAttribute("loginUser");
-
-
-        return new ResponseEntity<>(scheduleService.updateComment(scheduleId,commentId,loginUser.getId(), dto.getContents()),HttpStatus.OK);
-    }
-
-
-    @DeleteMapping("/{scheduleId}/{commentId}")
-    public ResponseEntity<Void> deleteComment(
-            @PathVariable Long scheduleId,
-            @PathVariable Long commentId,
-            HttpServletRequest request
-    ){
-        HttpSession session = request.getSession(false);
-        UserResponseDto loginUser = (UserResponseDto) session.getAttribute("loginUser");
-
-        scheduleService.deleteComment(scheduleId,commentId,loginUser.getId());
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
 
 }

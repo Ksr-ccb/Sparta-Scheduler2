@@ -1,7 +1,7 @@
 package com.example.improvedscheduler.service.schedule;
 
-import com.example.improvedscheduler.dto.schedule.MultipleSchedulesResponseDto;
-import com.example.improvedscheduler.dto.schedule.ScheduleResponseDto;
+import com.example.improvedscheduler.common.dto.schedule.MultipleSchedulesResponseDto;
+import com.example.improvedscheduler.common.dto.schedule.ScheduleResponseDto;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -19,11 +19,6 @@ public interface ScheduleService {
 
     void deleteSchedule(Long scheduleId, Long id);
 
-    ScheduleResponseDto createComment(Long scheduleId, Long id, String contents);
-
     ScheduleResponseDto findScheduleById(Long scheduleId);
 
-    ScheduleResponseDto updateComment(Long scheduleId, Long commentId, Long userId, String contents);
-
-    void deleteComment(Long scheduleId, Long commentId, Long id);
 }

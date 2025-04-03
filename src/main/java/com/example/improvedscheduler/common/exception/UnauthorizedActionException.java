@@ -1,4 +1,4 @@
-package com.example.improvedscheduler.exception;
+package com.example.improvedscheduler.common.exception;
 
 import org.springframework.http.HttpStatus;
 
