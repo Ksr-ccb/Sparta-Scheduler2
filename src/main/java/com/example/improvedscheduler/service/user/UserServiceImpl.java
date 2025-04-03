@@ -43,7 +43,8 @@ public class UserServiceImpl implements UserService{
 
         User user = new User(username,encodedPassword,email);
         User savedUser = userRepository.save(user);
-        return new UserResponseDto(savedUser.getId(), savedUser.getUsername(), savedUser.getEmail());
+        return new UserResponseDto(savedUser.getId(), savedUser.getUsername(), savedUser.getEmail(),
+                savedUser.getCreateDate(), savedUser.getUpdateDate());
     }
 
     /**
@@ -68,7 +69,8 @@ public class UserServiceImpl implements UserService{
             throw new UnauthorizedActionException("현재 비밀번호가 틀립니다.");
         }
 
-        return new UserResponseDto(user.getId(), user.getUsername(), user.getEmail());
+        return new UserResponseDto(user.getId(), user.getUsername(), user.getEmail(),
+                user.getCreateDate(), user.getUpdateDate());
     }
 
     /**

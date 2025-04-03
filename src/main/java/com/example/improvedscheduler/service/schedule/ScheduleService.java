@@ -19,4 +19,8 @@ public interface ScheduleService {
     void deleteSchedule(Long scheduleId);
 
     Long getUserIdByScheduleId(Long scheduleId);
+
+    ScheduleResponseDto createComment(Long scheduleId, Long id, String contents);
+
+    ScheduleResponseDto findScheduleById(Long scheduleId);
 }

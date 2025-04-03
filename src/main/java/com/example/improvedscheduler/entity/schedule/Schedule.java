@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Entity
 @Table(name = "schedule")
@@ -34,4 +37,19 @@ public class Schedule extends DateEntity {
 
     public Schedule() {
     }
+
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
+    // 댓글 추가 메서드
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        comment.setSchedule(this);
+    }
+
+    // 댓글 삭제 메서드
+    public void removeComment(Comment comment) {
+        comments.remove(comment);
+    }
+
 }

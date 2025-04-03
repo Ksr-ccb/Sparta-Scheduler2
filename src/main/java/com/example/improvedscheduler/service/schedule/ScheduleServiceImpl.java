@@ -1,8 +1,11 @@
 package com.example.improvedscheduler.service.schedule;
 
+import com.example.improvedscheduler.dto.schedule.CommentResponseDto;
 import com.example.improvedscheduler.dto.schedule.ScheduleResponseDto;
+import com.example.improvedscheduler.entity.schedule.Comment;
 import com.example.improvedscheduler.entity.schedule.Schedule;
 import com.example.improvedscheduler.entity.user.User;
+import com.example.improvedscheduler.repository.schedule.CommentRepository;
 import com.example.improvedscheduler.repository.schedule.ScheduleRepository;
 import com.example.improvedscheduler.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +14,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
+
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -19,6 +24,7 @@ public class ScheduleServiceImpl implements ScheduleService{
 
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public ScheduleResponseDto saveSchedule(String title, String contents, Long id) {
@@ -30,8 +36,7 @@ public class ScheduleServiceImpl implements ScheduleService{
 
         scheduleRepository.save(schedule);
 
-        return new ScheduleResponseDto(schedule.getId(), schedule.getTitle(), schedule.getContents(),
-                schedule.getUser().getUsername(), schedule.getCreateDate(), schedule.getUpdateDate());
+        return toScheduleResponseDto(schedule);
 
     }
 
@@ -40,14 +45,7 @@ public class ScheduleServiceImpl implements ScheduleService{
         Pageable pageable = PageRequest.of(pageNum.intValue(), pageSize.intValue());
 
         Page<Schedule> schedulePage = scheduleRepository.findAllByOrderByIdAsc(pageable);
-        return schedulePage.map(schedule -> new ScheduleResponseDto(
-                schedule.getId(),
-                schedule.getTitle(),
-                schedule.getContents(),
-                schedule.getUser().getUsername(),
-                schedule.getCreateDate(),
-                schedule.getUpdateDate()
-        ));
+        return schedulePage.map(this::toScheduleResponseDto);
     }
 
     @Override
@@ -79,14 +77,13 @@ public class ScheduleServiceImpl implements ScheduleService{
             schedule.setContents(contents);
         }
 
-        return new ScheduleResponseDto(
-                schedule.getId(),
-                schedule.getTitle(),
-                schedule.getContents(),
-                schedule.getUser().getUsername(),
-                schedule.getCreateDate(),
-                schedule.getUpdateDate()
-        );
+        return toScheduleResponseDto(schedule);
+    }
+
+    @Override
+    public ScheduleResponseDto findScheduleById(Long scheduleId) {
+        Schedule schedule = scheduleRepository.findByIdOrElseThrow(scheduleId);
+        return toScheduleResponseDto(schedule);
     }
 
     @Override
@@ -101,4 +98,33 @@ public class ScheduleServiceImpl implements ScheduleService{
         return schedule.getUser().getId();
     }
 
+    @Override
+    public ScheduleResponseDto createComment(Long scheduleId, Long id, String contents) {
+        Schedule schedule = scheduleRepository.findByIdOrElseThrow(scheduleId);
+        User user = userRepository.findByIdOrElseThrow(id);
+
+        Comment comment = new Comment(contents);
+        comment.setSchedule(schedule);
+        comment.setUser(user);
+
+        commentRepository.save(comment);
+
+        schedule.addComment(comment);
+        return toScheduleResponseDto(schedule);
+    }
+
+
+
+    private ScheduleResponseDto toScheduleResponseDto(Schedule schedule){
+        return new ScheduleResponseDto(
+                schedule.getId(),
+                schedule.getTitle(),
+                schedule.getContents(),
+                schedule.getUser().getUsername(),
+                schedule.getCreateDate(),
+                schedule.getUpdateDate(),
+                schedule.getComments().stream()
+                        .map(CommentResponseDto::toResponseDto)
+                        .toList());
+    }
 }

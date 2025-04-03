@@ -4,6 +4,7 @@ import com.example.improvedscheduler.entity.schedule.Schedule;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 public class ScheduleResponseDto {
@@ -20,13 +21,16 @@ public class ScheduleResponseDto {
 
     public final LocalDateTime updateDate;
 
-    public ScheduleResponseDto(Long id, String title, String contents, String name, LocalDateTime createDate, LocalDateTime updateDate) {
+    public final List<CommentResponseDto> comments;
+
+    public ScheduleResponseDto(Long id, String title, String contents, String name, LocalDateTime createDate, LocalDateTime updateDate, List<CommentResponseDto> comments) {
         this.id = id;
         this.title = title;
         this.contents = contents;
         this.name = name;
         this.createDate = createDate;
         this.updateDate = updateDate;
+        this.comments = comments;
     }
 
     public static ScheduleResponseDto toResponseDto(Schedule schedule) {
@@ -36,6 +40,9 @@ public class ScheduleResponseDto {
                 schedule.getContents(),
                 schedule.getUser().getUsername(),
                 schedule.getCreateDate(),
-                schedule.getUpdateDate());
+                schedule.getUpdateDate(),
+                schedule.getComments().stream()
+                        .map(CommentResponseDto::toResponseDto)
+                        .toList());
     }
 }

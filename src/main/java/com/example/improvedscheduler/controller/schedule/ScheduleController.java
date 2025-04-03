@@ -1,9 +1,7 @@
 package com.example.improvedscheduler.controller.schedule;
 
+import com.example.improvedscheduler.dto.schedule.*;
 import com.example.improvedscheduler.dto.user.UserResponseDto;
-import com.example.improvedscheduler.dto.schedule.CreateScheduleDto;
-import com.example.improvedscheduler.dto.schedule.ScheduleResponseDto;
-import com.example.improvedscheduler.dto.schedule.UpdateScheduleDto;
 import com.example.improvedscheduler.exception.WrongApproachException;
 import com.example.improvedscheduler.service.schedule.ScheduleService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -52,7 +50,6 @@ public class ScheduleController {
         }
         // session에 저장된 유저정보 조회
         UserResponseDto loginUser = (UserResponseDto) session.getAttribute("loginUser");
-
 
         return new ResponseEntity<>(scheduleService.saveSchedule(dto.getTitle(), dto.getContents(),
                 loginUser.getId()), HttpStatus.CREATED);
@@ -105,6 +102,16 @@ public class ScheduleController {
 
         return new ResponseEntity<>(scheduleResponseDtoList, HttpStatus.OK);
     }
+
+
+    @GetMapping("/{scheduleId}")
+    public ResponseEntity<ScheduleResponseDto> findScheduleById(
+            @PathVariable Long scheduleId
+    ) {
+
+        return new ResponseEntity<>(scheduleService.findScheduleById(scheduleId), HttpStatus.OK);
+    }
+
 
     /**
      * 특정 스케줄을 수정합니다.
@@ -161,6 +168,21 @@ public class ScheduleController {
         scheduleService.deleteSchedule(scheduleId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    /***************밑은 덧글 api******************/
+
+    @PostMapping("/{scheduleId}")
+    public ResponseEntity<ScheduleResponseDto> createComment(
+            @RequestBody CreateCommentRequestDto dto,
+            @PathVariable Long scheduleId,
+            HttpServletRequest request){
+
+        HttpSession session = request.getSession(false);
+        UserResponseDto loginUser = (UserResponseDto) session.getAttribute("loginUser");
+
+
+        return new ResponseEntity<>(scheduleService.createComment(scheduleId,loginUser.getId(),dto.getContents()), HttpStatus.CREATED);
     }
 
 }
