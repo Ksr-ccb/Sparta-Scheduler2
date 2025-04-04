@@ -126,7 +126,8 @@
 
 
 ## ERD
-![image](https://github.com/user-attachments/assets/4b8104f1-5a57-4189-8726-21625e05864f)
+![image](https://github.com/user-attachments/assets/167458a2-615d-4590-a568-ed711de55bdb)
+
 
 
 ---
