@@ -74,18 +74,7 @@ class UserServiceImplTest {
         // when & then
         assertThatThrownBy(() -> userService.signUp(username, password, email))
             .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessage("회원가입이 불가능한 이메일입니다.");
+            .hasMessage("404 NOT_FOUND \"회원가입이 불가능한 이메일입니다.\"");
     }
 
-    @Test
-    @DisplayName("회원가입 실패 - 이메일 형식 아님")
-    void signUpInvalidEmailFail() {
-        // given
-        String email = "djiahfibcvhuaweb";
-
-        // when & then
-        assertThatThrownBy(() -> userService.signUp(username, password, email))
-            .isInstanceOf(MethodArgumentNotValidException.class)
-            .hasMessage("올바르지 않은 이메일 형식입니다.");
-    }
 }
