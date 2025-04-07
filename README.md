@@ -126,7 +126,11 @@
 
 
 ## ERD
-![image](https://github.com/user-attachments/assets/4b8104f1-5a57-4189-8726-21625e05864f)
+![image](https://github.com/user-attachments/assets/44626ea7-2ac3-4f99-b0a6-1f15216067da)
+
+
+## UML
+![image](https://github.com/user-attachments/assets/410c778d-2926-45c9-a1d0-cd38961e7905)
 
 
 ---
