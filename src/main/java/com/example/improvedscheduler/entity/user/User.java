@@ -11,17 +11,18 @@ import lombok.Setter;
  */
 @Getter
 @Entity
+@Setter
 @Table(name = "user")
 public class User extends DateEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
+
     @Column(nullable = false)
     private String username;
 
-    @Setter
+
     @Column(nullable = false)
     private String password;
 

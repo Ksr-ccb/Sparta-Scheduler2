@@ -37,6 +37,7 @@ public class ScheduleServiceImpl implements ScheduleService{
      * @throws ResponseStatusException 사용자가 존재하지 않을 경우 예외 발생
      */
     @Override
+    @Transactional
     public ScheduleResponseDto saveSchedule(String title, String contents, Long id) {
 
         User user = userRepository.findByIdOrElseThrow(id);
@@ -59,7 +60,6 @@ public class ScheduleServiceImpl implements ScheduleService{
      * @return 일정 목록을 담은 페이지 DTO
      */
     @Override
-    @Transactional(readOnly = true)
     public List<MultipleSchedulesResponseDto> getAllSchedulesPaged(int pageNum, int pageSize) {
         Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.DESC,
                 "updateDate"));
@@ -74,7 +74,6 @@ public class ScheduleServiceImpl implements ScheduleService{
      * @return 일정 목록을 담은 DTO 리스트
      */
     @Override
-    @Transactional(readOnly = true)
     public List<MultipleSchedulesResponseDto> findAll() {
         return scheduleRepository.findAll()
                 .stream()
@@ -109,6 +108,7 @@ public class ScheduleServiceImpl implements ScheduleService{
      * @throws ResponseStatusException 일정이 존재하지 않을 경우 예외 발생
      */
     @Override
+    @Transactional
     public ScheduleResponseDto updateSchedule(Long scheduleId, Long loginUserId, String title, String contents) {
 
         checkWriter(scheduleId, loginUserId);
@@ -136,6 +136,7 @@ public class ScheduleServiceImpl implements ScheduleService{
      * @throws ResponseStatusException 일정이 존재하지 않을 경우 예외 발생
      */
     @Override
+    @Transactional
     public void deleteSchedule(Long scheduleId, Long loginUserId) {
 
         checkWriter(scheduleId, loginUserId);
@@ -149,7 +150,7 @@ public class ScheduleServiceImpl implements ScheduleService{
      * 특정 일정의 작성자 ID를 조회하는 메서드입니다.
      * 일정을 수정/삭제할 때 본인만 할 수 있는데, 수정/삭제시 본인이 맞는지 검사하는 메서드입니다.
      * @param scheduleId 일정 ID
-     * @return 일정 작성자의 사용자 ID
+     * @param loginUserId 일정 작성자의 사용자 ID
      * @throws ResponseStatusException 일정이 존재하지 않을 경우 예외 발생
      */
     private void checkWriter(Long scheduleId, Long loginUserId) {

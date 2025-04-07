@@ -36,6 +36,11 @@ public class UserServiceImpl implements UserService{
      */
     @Override
     public UserResponseDto signUp(String username, String password, String email) {
+        Optional<User> loginUser = userRepository.findByEmail(email);
+
+        if(loginUser.isPresent()){
+            throw new ResourceNotFoundException("회원가입이 불가능한 이메일입니다.");
+        }
 
         //비밀번호 암호화
         String encodedPassword = encoder.encode(password);
