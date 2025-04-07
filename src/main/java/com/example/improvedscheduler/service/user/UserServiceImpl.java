@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService{
         Optional<User> loginUser = userRepository.findByEmail(email);
 
         if(loginUser.isPresent()){
-            throw new ResourceNotFoundException("회원가입이 불가능한 이메일입니다.");
+            throw new UnauthorizedActionException("회원가입이 불가능한 이메일입니다.");
         }
 
         //비밀번호 암호화

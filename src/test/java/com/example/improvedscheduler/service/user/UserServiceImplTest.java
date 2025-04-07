@@ -1,9 +1,7 @@
 package com.example.improvedscheduler.service.user;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.example.improvedscheduler.common.dto.user.UserResponseDto;
-import com.example.improvedscheduler.common.exception.ResourceNotFoundException;
+import com.example.improvedscheduler.common.exception.UnauthorizedActionException;
 import com.example.improvedscheduler.repository.user.UserRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.example.improvedscheduler.entity.user.User;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -73,7 +70,7 @@ class UserServiceImplTest {
 
         // when & then
         assertThatThrownBy(() -> userService.signUp(username, password, email))
-            .isInstanceOf(ResourceNotFoundException.class)
+            .isInstanceOf(UnauthorizedActionException.class)
             .hasMessage("404 NOT_FOUND \"회원가입이 불가능한 이메일입니다.\"");
     }
 
