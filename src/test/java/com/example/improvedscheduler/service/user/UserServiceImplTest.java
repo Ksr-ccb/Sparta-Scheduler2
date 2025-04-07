@@ -71,7 +71,7 @@ class UserServiceImplTest {
         // when & then
         assertThatThrownBy(() -> userService.signUp(username, password, email))
             .isInstanceOf(UnauthorizedActionException.class)
-            .hasMessage("404 NOT_FOUND \"회원가입이 불가능한 이메일입니다.\"");
+            .hasMessage("401 UNAUTHORIZED \"회원가입이 불가능한 이메일입니다.\"");
     }
 
 }
